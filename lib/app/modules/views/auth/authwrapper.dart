@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firstore_curd/app/modules/controllers/auth_controller.dart';
 import 'package:firstore_curd/app/modules/controllers/user_controller.dart';
 import 'package:flutter/material.dart';

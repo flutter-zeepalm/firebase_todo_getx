@@ -12,12 +12,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import 'feed.dart';
+
 class HomeView extends StatelessWidget {
   HomeView({Key? key}) : super(key: key);
 
   AuthController authController = Get.find<AuthController>();
   TodoController todoController = Get.find<TodoController>();
   UserController userController = Get.find<UserController>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,6 +30,11 @@ class HomeView extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.white,
         centerTitle: true,
+        leading: CustomTextButton(
+            text: "Feed",
+            onPressed: () {
+              Get.to(() => FeedPage());
+            }),
         actions: [
           Center(
             child: CustomTextButton(
@@ -47,10 +55,33 @@ class HomeView extends StatelessWidget {
                   return CircularProgressIndicator();
                 }
                 UserModel currentUser = snapshot.data!;
-                return Text(currentUser.name!);
+                return Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 50.r,
+                      backgroundColor: Colors.grey.withOpacity(0.5),
+                      backgroundImage: NetworkImage(currentUser.pic!),
+                    ),
+                    SizedBox(width: 20.w),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(currentUser.name!.capitalizeFirst.toString(),
+                              style: CustomTextStyle.kBold18),
+                          Text(currentUser.email!,
+                              style: CustomTextStyle.kMedium16),
+                          Text(currentUser.id,
+                              style: CustomTextStyle.kMedium14),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
               }),
-          StreamBuilder<List<TodoModel>>(
-              stream: todoController.getAllTask(),
+          SizedBox(height: 20.h),
+          FutureBuilder<List<TodoModel>>(
+              future: todoController.getUsersTask(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 if (!snapshot.hasData) {
                   return const Center(child: CircularProgressIndicator());
@@ -58,7 +89,7 @@ class HomeView extends StatelessWidget {
                 List<TodoModel>? taskList = snapshot.data;
                 if (taskList!.isEmpty) {
                   return const Center(
-                    child: Text("No Data found"),
+                    child: Text("No Record Found of this User"),
                   );
                 }
                 return ListView.builder(
@@ -68,8 +99,13 @@ class HomeView extends StatelessWidget {
                     itemBuilder: (context, index) {
                       TodoModel task = taskList[index];
                       return TaskWidget(
-                        title: task.title,
-                        description: task.description,
+                        dislikeTap: () async {
+                          await todoController.addDisLike(task);
+                        },
+                        likeTap: () async {
+                          await todoController.addLike(task);
+                        },
+                        todo: task,
                         onTap: () {
                           Get.to(() => UpdateScreen(uptodo: task));
                         },

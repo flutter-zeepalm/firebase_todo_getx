@@ -20,6 +20,8 @@ dependencies:
   flutter: 
     sdk: flutter
   flutter_gravatar: ^2.0.2
+  image_picker: ^0.8.5+3
+  firebase_storage: ^10.3.5
   
 
 dev_dependencies: 

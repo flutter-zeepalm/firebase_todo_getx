@@ -87,7 +87,9 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                               ownerid: "",
                               title: title,
                               description: description,
-                              isCheck: false),
+                              isCheck: false,
+                              likes: [],
+                              dislikes: []),
                           uid: FirebaseAuth.instance.currentUser!.uid);
                       // onFormSubmit();
                     }

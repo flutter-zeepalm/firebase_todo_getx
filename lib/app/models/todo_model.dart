@@ -7,12 +7,16 @@ class TodoModel {
   String title;
   String description;
   bool isCheck;
+  List<String> likes;
+  List<String> dislikes;
   TodoModel({
     required this.id,
     required this.ownerid,
     required this.title,
     required this.description,
     required this.isCheck,
+    required this.likes,
+    required this.dislikes,
   });
 
   Map<String, dynamic> toMap() {
@@ -22,6 +26,8 @@ class TodoModel {
       'title': title,
       'description': description,
       'isCheck': isCheck,
+      'likes': likes,
+      'dislikes': dislikes,
     };
   }
 
@@ -32,6 +38,8 @@ class TodoModel {
       title: map['title'] as String,
       description: map['description'] as String,
       isCheck: map['isCheck'] as bool,
+      likes: List<String>.from((map['likes'] as List<dynamic>)),
+      dislikes: List<String>.from((map['dislikes'] as List<dynamic>)),
     );
   }
 

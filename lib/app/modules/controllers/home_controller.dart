@@ -1,11 +1,8 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firstore_curd/app/models/todo_model.dart';
 import 'package:firstore_curd/services/databasemanager.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class TodoController extends GetxController {
@@ -80,5 +77,33 @@ class TodoController extends GetxController {
     } on FirebaseException catch (error) {
       Get.snackbar("Error", error.message.toString());
     }
+  }
+
+  Future<void> addDisLike(TodoModel task) async {
+    if (task.dislikes.contains(task.ownerid)) {
+      task.dislikes.remove(task.ownerid);
+    } else if (task.likes.contains(task.ownerid)) {
+      task.likes.remove(task.ownerid);
+      task.dislikes.add(task.ownerid);
+    } else {
+      task.dislikes.add(task.ownerid);
+    }
+    await DataBaseManager.updateTask(taskModel: task);
+    print(task.dislikes.length);
+    update();
+  }
+
+  Future<void> addLike(TodoModel task) async {
+    if (task.likes.contains(task.ownerid)) {
+      task.likes.remove(task.ownerid);
+    } else if (task.dislikes.contains(task.ownerid)) {
+      task.dislikes.remove(task.ownerid);
+      task.likes.add(task.ownerid);
+    } else {
+      task.likes.add(task.ownerid);
+    }
+    await DataBaseManager.updateTask(taskModel: task);
+    print(task.dislikes.length);
+    update();
   }
 }

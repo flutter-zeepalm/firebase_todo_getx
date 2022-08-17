@@ -22,72 +22,71 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Padding(
+      body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 20),
+        physics: const BouncingScrollPhysics(),
         child: Form(
           key: _formKey,
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            SizedBox(height: 70.h),
+            Text("Welcome \nto FireStore \nTODO App",
+                style: CustomTextStyle.kBold18.copyWith(
+                  fontSize: 40.sp,
+                )),
+            SizedBox(height: 40.h),
+            CustomTextFormField(
+              hintText: 'Enter Email',
+              controller: _email,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your email';
+                } else if (!value.isEmail) {
+                  return 'Please enter a valid email';
+                }
+                return null;
+              },
+            ),
+            SizedBox(height: 30.h),
+            CustomTextFormField(
+              controller: _pass,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your password';
+                }
+                return null;
+              },
+              hintText: "Enter Password",
+            ),
+            SizedBox(height: 30.h),
+            CustomButton(
+              onPressed: () async {
+                if (_formKey.currentState!.validate()) {
+                  await authController.signInWithEmailAndPassword(
+                      _email.text.trim(), _pass.text.trim());
+                  print("Successfully Login");
+                }
+              },
+              text: "Log In",
+            ),
+            SizedBox(height: 20.h),
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("Welcome \nto FireStore \nTODO App",
-                    style: CustomTextStyle.kBold18.copyWith(
-                      fontSize: 40.sp,
-                    )),
-                SizedBox(height: 40.h),
-                CustomTextFormField(
-                  hintText: 'Enter Email',
-                  controller: _email,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
-                    } else if (!value.isEmail) {
-                      return 'Please enter a valid email';
-                    }
-                    return null;
+                Text(
+                  "Don't Have a Account?",
+                  style: CustomTextStyle.kBold18,
+                ),
+                SizedBox(width: 10.h),
+                CustomTextButton(
+                  onPressed: () {
+                    Get.to(() => SignUpPage());
                   },
+                  text: "Sign Up",
                 ),
-                SizedBox(height: 30.h),
-                CustomTextFormField(
-                  controller: _pass,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
-                    }
-                    return null;
-                  },
-                  hintText: "Enter Password",
-                ),
-                SizedBox(height: 30.h),
-                CustomButton(
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      await authController.signInWithEmailAndPassword(
-                          _email.text.trim(), _pass.text.trim());
-                      print("Successfully Login");
-                    }
-                  },
-                  text: "Log In",
-                ),
-                SizedBox(height: 20.h),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Don't Have a Account?",
-                      style: CustomTextStyle.kBold18,
-                    ),
-                    SizedBox(width: 10.h),
-                    CustomTextButton(
-                      onPressed: () {
-                        Get.to(() => SignupPage());
-                      },
-                      text: "Sign Up",
-                    ),
-                  ],
-                ),
-              ]),
+              ],
+            ),
+          ]),
         ),
       ),
     );

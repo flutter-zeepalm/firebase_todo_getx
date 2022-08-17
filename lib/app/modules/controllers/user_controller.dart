@@ -1,6 +1,3 @@
-import 'dart:developer';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firstore_curd/services/databasemanager.dart';
 import 'package:get/get.dart';
 
@@ -14,14 +11,14 @@ class UserController extends GetxController {
 
   UserModel get user => _userModel.value!;
 
-  Future<UserModel> getCurrentUser()async{
-    return await db.usersCollection.doc(authController.user!.uid).get().then((doc){
-      return UserModel.fromMap(doc.data() as Map<String,dynamic>);
+  Future<UserModel> getCurrentUser() async {
+    return await db.usersCollection
+        .doc(authController.user!.uid)
+        .get()
+        .then((doc) {
+      return UserModel.fromMap(doc.data() as Map<String, dynamic>);
     });
   }
-
-
-
 
   // Stream<DocumentSnapshot> get currentUserStream {
   //   return db.usersCollection
@@ -30,8 +27,8 @@ class UserController extends GetxController {
   // }
 
   @override
-  Future<void> onReady() async{
-   _userModel.value = await getCurrentUser();
+  Future<void> onReady() async {
+    _userModel.value = await getCurrentUser();
 
     super.onReady();
   }
