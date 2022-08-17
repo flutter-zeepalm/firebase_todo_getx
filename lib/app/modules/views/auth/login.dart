@@ -63,7 +63,7 @@ class LoginPage extends StatelessWidget {
                 CustomButton(
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      authController.signInWithEmailAndPassword(
+                      await authController.signInWithEmailAndPassword(
                           _email.text.trim(), _pass.text.trim());
                       print("Successfully Login");
                     }

@@ -1,10 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firstore_curd/app/models/todo_model.dart';
+import 'package:firstore_curd/app/models/user_model.dart';
 import 'package:get/get.dart';
 
-CollectionReference taskCollection =
-    FirebaseFirestore.instance.collection('Tasks');
+class DatabaseService {
+  CollectionReference taskCollection =
+      FirebaseFirestore.instance.collection('Tasks');
+
+  CollectionReference usersCollection =
+      FirebaseFirestore.instance.collection('users');
+}
 
 class DataBaseManager {
   static Future addTask(
@@ -52,7 +58,10 @@ class DataBaseManager {
 //Update Task
   static Future updateTask({required TodoModel taskModel}) async {
     try {
-      await taskCollection.doc(taskModel.id).update(taskModel.toMap());
+      await DatabaseService()
+          .taskCollection
+          .doc(taskModel.id)
+          .update(taskModel.toMap());
       getUsersTask();
     } on FirebaseException catch (e) {
       Get.snackbar(

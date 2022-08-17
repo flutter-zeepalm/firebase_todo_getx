@@ -1,7 +1,9 @@
 import 'package:firstore_curd/app/data/text_styles.dart';
 import 'package:firstore_curd/app/models/todo_model.dart';
+import 'package:firstore_curd/app/models/user_model.dart';
 import 'package:firstore_curd/app/modules/controllers/auth_controller.dart';
 import 'package:firstore_curd/app/modules/controllers/home_controller.dart';
+import 'package:firstore_curd/app/modules/controllers/user_controller.dart';
 import 'package:firstore_curd/app/modules/views/Add_task_screen.dart';
 import 'package:firstore_curd/app/modules/views/update.dart';
 import 'package:firstore_curd/app/modules/widgets/custom_textbutton.dart';
@@ -15,7 +17,7 @@ class HomeView extends StatelessWidget {
 
   AuthController authController = Get.find<AuthController>();
   TodoController todoController = Get.find<TodoController>();
-
+  UserController userController = Get.find<UserController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,37 +40,15 @@ class HomeView extends StatelessWidget {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(8.0),
         child: Column(children: [
-          GetBuilder<AuthController>(
-              init: AuthController(),
-              builder: (ac) => ac.firestoreUser.value!.id == null
-                  ? Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : Row(
-                      children: [
-                        CircleAvatar(
-                            radius: 50.r,
-                            backgroundImage:
-                                NetworkImage(ac.firestoreUser.value!.pic)),
-                        SizedBox(width: 10.w),
-                        Column(
-                          children: [
-                            Text(
-                              ac.firestoreUser.value!.name,
-                              style: CustomTextStyle.kBold20,
-                            ),
-                            Text(
-                              ac.firestoreUser.value!.email,
-                              style: CustomTextStyle.kBold20,
-                            ),
-                            Text(
-                              ac.firestoreUser.value!.id,
-                              style: CustomTextStyle.kBold20,
-                            )
-                          ],
-                        ),
-                      ],
-                    )),
+          FutureBuilder<UserModel?>(
+              future: userController.getCurrentUser(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                }
+                UserModel currentUser = snapshot.data!;
+                return Text(currentUser.name!);
+              }),
           StreamBuilder<List<TodoModel>>(
               stream: todoController.getAllTask(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {

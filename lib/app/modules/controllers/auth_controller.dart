@@ -6,51 +6,34 @@ import 'package:firstore_curd/app/modules/views/home_view.dart';
 import 'package:flutter_gravatar/flutter_gravatar.dart';
 import 'package:get/get.dart';
 
+import '../../../services/databasemanager.dart';
+
 class AuthController extends GetxController {
   FirebaseAuth _auth = FirebaseAuth.instance;
-  FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  Rxn<User> firebaseUser = Rxn<User>();
-  Rxn<UserModel> firestoreUser = Rxn<UserModel>();
+  Rx<User?> _firebaseUser = Rx<User?>(null);
+  User? get user => _firebaseUser.value;
+  DatabaseService db = DatabaseService();
 
   @override
-  void onReady() async {
-    ever(firebaseUser, handleAuthChanged);
-    firebaseUser.bindStream(user);
-    super.onReady();
+  void onInit() {
+    _firebaseUser.bindStream(_auth.authStateChanges());
+    update();
+    super.onInit();
   }
 
-  handleAuthChanged(firebaseUser) async {
-    if (firebaseUser == null) {
-      print('Send to signin');
-      Get.to(() => LoginPage());
-    } else {
-      Get.offAll(() => HomeView());
-    }
-  }
+  // @override
+  // void onReady() async {
+  //   ever(firebaseUser, handleAuthChanged);
+  //   firebaseUser.bindStream(user);
+  //   super.onReady();
+  // }
 
-  Future<User> get getUser async => _auth.currentUser!;
-  Stream<User?> get user => _auth.authStateChanges();
-
-  Stream<UserModel> streamFirestoreUser() {
-    print('streamFirestoreUser()');
-
-    return _db
-        .doc('/users/${firebaseUser.value!.uid}')
-        .snapshots()
-        .map((snapshot) => UserModel.fromMap(snapshot.data()!));
-  }
-
-  Future<UserModel> getFirestoreUser() {
-    return _db.doc('/users/${firebaseUser.value!.uid}').get().then(
-        (documentSnapshot) => UserModel.fromMap(documentSnapshot.data()!));
-  }
-
-  signInWithEmailAndPassword(String email, String password) async {
+  Future<void> signInWithEmailAndPassword(String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
-    } catch (error) {
-      Get.snackbar('Login Failed', 'There is some error!',
+    } on FirebaseAuthException catch (error) {
+      Get.snackbar('Login Failed', error.message!,
           snackPosition: SnackPosition.BOTTOM,
           duration: Duration(seconds: 3),
           backgroundColor: Get.theme.snackBarTheme.backgroundColor,
@@ -58,11 +41,10 @@ class AuthController extends GetxController {
     }
   }
 
-  registerWithEmailAndPassword(
-      //
-      String email,
-      String password,
-      String name) async {
+  Future<void> registerWithEmailAndPassword(
+      {required String email,
+      required String password,
+      required String name}) async {
     try {
       await _auth
           .createUserWithEmailAndPassword(email: email, password: password)
@@ -78,11 +60,12 @@ class AuthController extends GetxController {
             email: result.user!.email!,
             name: name,
             pic: gravatarUrl);
-        _createUserFirestore(newUser, result.user!);
+        await _createUserFirestore(newUser, result.user!);
+        Get.back();
       });
     } on FirebaseAuthException catch (error) {
       Get.snackbar('Sign up Failed',
-          "There is some issue while creating your Account $error",
+          "There is some issue while creating your Account ${error.message}",
           snackPosition: SnackPosition.BOTTOM,
           duration: Duration(seconds: 10),
           backgroundColor: Get.theme.snackBarTheme.backgroundColor,
@@ -90,8 +73,8 @@ class AuthController extends GetxController {
     }
   }
 
-  void _createUserFirestore(UserModel user, User firebaseUser) {
-    _db.doc('/users/${firebaseUser.uid}').set(user.toMap());
+  Future<void> _createUserFirestore(UserModel user, User firebaseUser) async {
+    await db.usersCollection.doc(firebaseUser.uid).set(user.toMap());
     update();
   }
 

@@ -3,14 +3,14 @@ import 'dart:convert';
 
 class UserModel {
   String id;
-  String email;
-  String name;
-  String pic;
+  String? email;
+  String? name;
+  String? pic;
   UserModel({
     required this.id,
-    required this.email,
-    required this.name,
-    required this.pic,
+    this.email,
+    this.name,
+    this.pic,
   });
 
   Map<String, dynamic> toMap() {

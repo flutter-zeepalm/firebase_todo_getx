@@ -71,12 +71,12 @@ class SignupPage extends StatelessWidget {
                 ),
                 SizedBox(height: 30.h),
                 CustomButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      authController.registerWithEmailAndPassword(
-                          _email.text.trim(),
-                          _pass.text.trim(),
-                          _name.text.trim());
+                      await authController.registerWithEmailAndPassword(
+                          email: _email.text.trim(),
+                          password: _pass.text.trim(),
+                          name: _name.text.trim());
                     }
                   },
                   text: "Sign Up",
@@ -89,7 +89,7 @@ class SignupPage extends StatelessWidget {
                         style: CustomTextStyle.kBold18),
                     CustomTextButton(
                       onPressed: () {
-                        Get.to(() => LoginPage());
+                        Get.back();
                       },
                       text: "Sign In",
                     ),

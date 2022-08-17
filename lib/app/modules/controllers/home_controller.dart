@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class TodoController extends GetxController {
+  DatabaseService db = DatabaseService();
+
   Future addTask({required TodoModel taskModel, required String uid}) async {
     try {
       await DataBaseManager.addTask(taskModel: taskModel, uid: uid);
@@ -22,7 +24,7 @@ class TodoController extends GetxController {
   }
 
   Stream<List<TodoModel>> getAllTask() {
-    return taskCollection.snapshots().map((snapshot) {
+    return db.taskCollection.snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
         return TodoModel.fromMap(doc.data() as Map<String, dynamic>);
       }).toList();
@@ -74,7 +76,7 @@ class TodoController extends GetxController {
 
   Future deleteTask({required TodoModel taskModel}) async {
     try {
-      await taskCollection.doc(taskModel.id).delete();
+      await db.taskCollection.doc(taskModel.id).delete();
     } on FirebaseException catch (error) {
       Get.snackbar("Error", error.message.toString());
     }

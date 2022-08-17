@@ -17,7 +17,7 @@ Future<void> main() async {
             debugShowCheckedModeBanner: false,
             title: "Application",
             home: SplashScreen(),
-            initialBinding: HomeBinding(),
+            initialBinding: InitialBinding(),
           );
         }),
   );
