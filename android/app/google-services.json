@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "2052953996",
+    "project_id": "getx-curd",
+    "storage_bucket": "getx-curd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:2052953996:android:b90cbc1664007de4aea8a9",
+        "android_client_info": {
+          "package_name": "com.firstore_curd.firstore_curd"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "2052953996-fp015sa2heirc60nu6eq35bg1gmhkb2q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANfP7m8pDEHX4OtfD6c2gQoiUkI3ML3f4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "2052953996-fp015sa2heirc60nu6eq35bg1gmhkb2q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
