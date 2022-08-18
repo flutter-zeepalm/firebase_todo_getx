@@ -89,15 +89,14 @@ class _UpdateScreenState extends State<UpdateScreen> {
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       Get.back();
-                      tc.updateTaskfun(
-                          taskModel: TodoModel(
-                              title: titleController.text.trim(),
-                              likes: widget.uptodo.likes,
-                              dislikes: widget.uptodo.dislikes,
-                              description: descriptionController.text.trim(),
-                              id: widget.uptodo.id,
-                              isCheck: widget.uptodo.isCheck,
-                              ownerid: widget.uptodo.ownerid));
+                      tc.updateTask(TodoModel(
+                          title: titleController.text.trim(),
+                          likes: widget.uptodo.likes,
+                          dislikes: widget.uptodo.dislikes,
+                          description: descriptionController.text.trim(),
+                          id: widget.uptodo.id,
+                          isCheck: widget.uptodo.isCheck,
+                          ownerid: widget.uptodo.ownerid));
                     }
                   },
                   text: 'Update Todo'),

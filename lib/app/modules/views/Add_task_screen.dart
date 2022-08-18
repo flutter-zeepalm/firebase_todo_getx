@@ -82,15 +82,15 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       tc.addTask(
-                          taskModel: TodoModel(
-                              id: "",
-                              ownerid: "",
-                              title: title,
-                              description: description,
-                              isCheck: false,
-                              likes: [],
-                              dislikes: []),
-                          uid: FirebaseAuth.instance.currentUser!.uid);
+                        TodoModel(
+                            id: "",
+                            ownerid: "",
+                            title: title,
+                            description: description,
+                            isCheck: false,
+                            likes: [],
+                            dislikes: []),
+                      );
                       // onFormSubmit();
                     }
                   },

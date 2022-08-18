@@ -2,24 +2,28 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firstore_curd/app/models/todo_model.dart';
 import 'package:firstore_curd/services/databasemanager.dart';
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
 class TodoController extends GetxController {
   DatabaseService db = DatabaseService();
 
-  Future addTask({required TodoModel taskModel, required String uid}) async {
+  Future<void> addTask(TodoModel todo) async {
     try {
-      await DataBaseManager.addTask(taskModel: taskModel, uid: uid);
-      Get.back();
-    } on FirebaseAuthException catch (e) {
+      var doc = db.taskCollection.doc();
+      todo.id = doc.id;
+      todo.ownerid = FirebaseAuth.instance.currentUser!.uid;
+      await doc.set(todo.toMap());
+    } catch (e) {
       Get.snackbar(
         "error",
-        e.message!,
+        e.toString(),
+        borderRadius: 15,
+        snackPosition: SnackPosition.TOP,
       );
     }
   }
 
+//Get allTask
   Stream<List<TodoModel>> getAllTask() {
     return db.taskCollection.snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
@@ -28,6 +32,7 @@ class TodoController extends GetxController {
     });
   }
 
+//Get User Task
   Future<List<TodoModel>> getUsersTask() async {
     try {
       List<TodoModel> usersTasks = [];
@@ -50,23 +55,16 @@ class TodoController extends GetxController {
     }
   }
 
-  Future<void> updateTaskfun({
-    required TodoModel taskModel,
-  }) async {
-    dynamic res = await DataBaseManager.updateTask(taskModel: taskModel);
+//Update
+  Future updateTask(TodoModel todo) async {
     try {
-      if (res == null) {
-      } else {
-        if (kDebugMode) {
-          print('somethings went wrong');
-        }
-      }
-    } on FirebaseAuthException catch (e) {
+      await db.taskCollection.doc(todo.id).update(todo.toMap());
+    } on FirebaseException catch (e) {
       Get.snackbar(
         "error",
-        e.message!,
+        e.toString(),
         borderRadius: 15,
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
       );
     }
   }
@@ -88,7 +86,7 @@ class TodoController extends GetxController {
     } else {
       task.dislikes.add(task.ownerid);
     }
-    await DataBaseManager.updateTask(taskModel: task);
+    await updateTask(task);
     print(task.dislikes.length);
     update();
   }
@@ -102,7 +100,7 @@ class TodoController extends GetxController {
     } else {
       task.likes.add(task.ownerid);
     }
-    await DataBaseManager.updateTask(taskModel: task);
+    await updateTask(task);
     print(task.dislikes.length);
     update();
   }
