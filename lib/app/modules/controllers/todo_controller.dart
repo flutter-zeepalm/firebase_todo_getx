@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firstore_curd/app/models/todo_model.dart';
+import 'package:firstore_curd/app/modules/controllers/user_controller.dart';
 import 'package:firstore_curd/services/databasemanager.dart';
 import 'package:get/get.dart';
 
 class TodoController extends GetxController {
   DatabaseService db = DatabaseService();
-
+  UserController uc = Get.find<UserController>();
   Future<void> addTask(TodoModel todo) async {
     try {
       var doc = db.taskCollection.doc();
@@ -32,6 +33,9 @@ class TodoController extends GetxController {
     });
   }
 
+
+
+
 //Get User Task
   Future<List<TodoModel>> getUsersTask() async {
     try {
@@ -54,6 +58,18 @@ class TodoController extends GetxController {
       return [];
     }
   }
+
+
+// Stream<List<TodoModel>> getUserTask() {
+//   List<TodoModel> userTodos = [];
+//     return db.taskCollection.snapshots().where((event) => event.docs.forEach((element) {
+//      return element.id == uc.user.id;
+//     } )).map((snapshot) {
+//       return snapshot.docs.map((doc) {
+//         return TodoModel.fromMap(doc.data() as Map<String, dynamic>);
+//       }).toList();
+//     });
+//   }
 
 //Update
   Future updateTask(TodoModel todo) async {

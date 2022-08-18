@@ -1,11 +1,12 @@
 import 'package:firstore_curd/app/data/text_styles.dart';
 import 'package:firstore_curd/app/models/todo_model.dart';
-import 'package:firstore_curd/app/modules/controllers/home_controller.dart';
 import 'package:firstore_curd/app/modules/widgets/custom_button.dart';
 import 'package:firstore_curd/app/modules/widgets/custom_textformfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+
+import '../controllers/controllers.dart';
 
 class UpdateScreen extends StatefulWidget {
   final TodoModel uptodo;

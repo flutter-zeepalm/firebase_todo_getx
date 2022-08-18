@@ -10,16 +10,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-class SignUpPage extends StatelessWidget {
+class SignUpPage extends StatefulWidget {
   SignUpPage({Key? key}) : super(key: key);
 
+  @override
+  State<SignUpPage> createState() => _SignUpPageState();
+}
+
+class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
+
   final _email = TextEditingController();
+
   final _pass = TextEditingController();
+
   final _name = TextEditingController();
 
   AuthController authController = Get.find<AuthController>();
-  ImageController imageController = Get.find<ImageController>();
 
   File? image;
 
@@ -43,29 +50,29 @@ class SignUpPage extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.bottomRight,
                 children: [
-                  GetBuilder<ImageController>(
-                      init: ImageController(),
-                      builder: (ic) {
-                        return CircleAvatar(
-                          radius: 60.r,
-                          child: ic.image != null
-                              ? ClipOval(
-                                  clipBehavior: Clip.antiAlias,
-                                  child: Image.file(
-                                    ic.image!,
-                                    height: 200.h,
-                                    width: 200.w,
-                                    fit: BoxFit.cover,
-                                  ),
-                                )
-                              : Icon(Icons.person),
-                        );
-                      }),
+                  CircleAvatar(
+                    radius: 60.r,
+                    child: image != null
+                        ? ClipOval(
+                            clipBehavior: Clip.antiAlias,
+                            child: Image.file(
+                              image!,
+                              height: 200.h,
+                              width: 200.w,
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        : Icon(Icons.person),
+                  ),
                   CircleAvatar(
                       backgroundColor: Colors.orange,
                       child: IconButton(
                           onPressed: () async {
-                            imageController.getImage();
+                            File? pickedFile = await ImageService().getImage();
+                            if (pickedFile != null) {
+                              image = pickedFile;
+                              setState(() {});
+                            }
                           },
                           icon: Icon(Icons.add, color: Colors.white)))
                 ],
@@ -110,11 +117,17 @@ class SignUpPage extends StatelessWidget {
             CustomButton(
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
-                  imageController.addImageToFirebaseStorage();
+                  if (image == null) {
+                    Get.snackbar('Error', 'Please select an image',
+                        backgroundColor: Colors.red, colorText: Colors.white);
+                    return;
+                  }
+                  String? imageUrl =
+                      await StorageServices().uploadToStorage(image!);
                   await authController.registerWithEmailAndPassword(
                       email: _email.text.trim(),
                       password: _pass.text.trim(),
-                      image: imageController.downloadUrl1 ?? '',
+                      image: imageUrl ?? '',
                       name: _name.text.trim());
                 }
               },

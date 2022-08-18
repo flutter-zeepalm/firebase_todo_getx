@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-import '../controllers/home_controller.dart';
+import '../controllers/controllers.dart';
+
 
 class FeedPage extends StatelessWidget {
   FeedPage({Key? key}) : super(key: key);

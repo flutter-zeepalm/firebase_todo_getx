@@ -1,12 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firstore_curd/app/data/text_styles.dart';
 import 'package:firstore_curd/app/models/todo_model.dart';
-import 'package:firstore_curd/app/modules/controllers/home_controller.dart';
 import 'package:firstore_curd/app/modules/widgets/custom_button.dart';
 import 'package:firstore_curd/app/modules/widgets/custom_textformfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+
+import '../controllers/controllers.dart';
 
 class AddTodoScreen extends StatefulWidget {
   const AddTodoScreen({Key? key}) : super(key: key);
@@ -81,16 +82,18 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                 CustomButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      tc.addTask(
-                        TodoModel(
-                            id: "",
-                            ownerid: "",
-                            title: title,
-                            description: description,
-                            isCheck: false,
-                            likes: [],
-                            dislikes: []),
-                      );
+                      tc
+                          .addTask(
+                            TodoModel(
+                                id: "",
+                                ownerid: "",
+                                title: title,
+                                description: description,
+                                isCheck: false,
+                                likes: [],
+                                dislikes: []),
+                          )
+                          .then((value) => Get.back());
                       // onFormSubmit();
                     }
                   },

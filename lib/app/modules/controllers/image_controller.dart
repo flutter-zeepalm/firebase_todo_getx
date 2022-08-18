@@ -1,40 +1,47 @@
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firstore_curd/app/modules/widgets/Dialogs/loading_dialog.dart';
+import 'package:firstore_curd/services/databasemanager.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ImageController extends GetxController {
+class ImageService {
   File? image;
-  late String imagePath;
   final _picker = ImagePicker();
   String? downloadUrl1;
 
-  Future<void> getImage() async {
+  Future<File?> getImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       image = File(pickedFile.path);
-      imagePath = pickedFile.path;
-      print(imagePath);
-      update();
+      return image;
     } else {
       Get.snackbar("No Image", "Image not Selected");
+      return null;
     }
   }
+}
 
-  Future<String?> addImageToFirebaseStorage() async {
+class StorageServices {
+  final firebaseStorage = FirebaseStorage.instance;
+
+  Future<String?> uploadToStorage(File image) async {
+    showLoadingDialog();
     try {
-      final firebaseStorage = FirebaseStorage.instance;
+      String downloadUrl = '';
       var snapshot = await firebaseStorage
           .ref()
           .child('images/${DateTime.now()}')
-          .putFile(image!);
-      String downloadUrl = await snapshot.ref.getDownloadURL();
-      downloadUrl1 = downloadUrl;
+          .putFile(image);
+      downloadUrl = await snapshot.ref.getDownloadURL();
+      downloadUrl = downloadUrl;
+      dismissLoadingDialog();
       return downloadUrl;
-    } on FirebaseException catch (e) {
-      print(e.message);
-      return '';
+    } on Exception catch (e) {
+      dismissLoadingDialog();
+
+      return null;
     }
   }
 }
