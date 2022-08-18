@@ -51,8 +51,7 @@ class _MyBottomBarState extends State<MyBottomBar> {
           ),
         ),
       ),
-      floatingActionButtonLocation:
-          FloatingActionButtonLocation.miniCenterDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.orange,
         child: Icon(Icons.add),

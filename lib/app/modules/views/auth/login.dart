@@ -2,6 +2,7 @@
 
 import 'package:firstore_curd/app/data/text_styles.dart';
 import 'package:firstore_curd/app/modules/controllers/auth_controller.dart';
+import 'package:firstore_curd/app/modules/views/auth/reser_password.dart';
 import 'package:firstore_curd/app/modules/views/auth/sign_up.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -69,7 +70,17 @@ class LoginPage extends StatelessWidget {
               },
               text: "Log In",
             ),
-            SizedBox(height: 20.h),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                CustomTextButton(
+                  onPressed: () {
+                    Get.to(() => ForgetPassword());
+                  },
+                  text: "Forget Account",
+                ),
+              ],
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

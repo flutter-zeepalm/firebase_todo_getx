@@ -8,6 +8,6 @@ class InitialBinding extends Bindings {
   void dependencies() {
     Get.lazyPut<AuthController>(() => AuthController(), fenix: true);
     Get.lazyPut<UserController>(() => UserController());
-    Get.lazyPut<TodoController>(() => TodoController());
+    Get.put(() => TodoController());
   }
 }

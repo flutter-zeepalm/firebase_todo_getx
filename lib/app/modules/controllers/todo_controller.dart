@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firstore_curd/app/models/todo_model.dart';
 import 'package:firstore_curd/app/modules/controllers/user_controller.dart';
+import 'package:firstore_curd/app/modules/views/bottombar.dart';
 import 'package:firstore_curd/app/modules/widgets/Dialogs/loading_dialog.dart';
 import 'package:firstore_curd/services/databasemanager.dart';
 import 'package:get/get.dart';
@@ -17,7 +18,7 @@ class TodoController extends GetxController {
       todo.ownerid = FirebaseAuth.instance.currentUser!.uid;
       await doc.set(todo.toMap());
       dismissLoadingDialog();
-      Get.back();
+      Get.to(() => MyBottomBar());
     } catch (e) {
       dismissLoadingDialog();
       Get.snackbar(

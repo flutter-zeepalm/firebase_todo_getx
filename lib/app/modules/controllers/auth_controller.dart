@@ -69,6 +69,44 @@ class AuthController extends GetxController {
     update();
   }
 
+  Future<void> updateUserEmail(
+      {required String newEmail, required String name}) async {
+    showLoadingDialog();
+    try {
+      await _auth.currentUser!.updateEmail(newEmail).then((result) async {
+        db.usersCollection
+            .doc(_auth.currentUser!.uid)
+            .update({'email': newEmail, 'name': name});
+        dismissLoadingDialog();
+      });
+    } on FirebaseException catch (error) {
+      dismissLoadingDialog();
+      Get.snackbar('Update Failed', error.message.toString(),
+          snackPosition: SnackPosition.BOTTOM,
+          duration: Duration(seconds: 10),
+          backgroundColor: Get.theme.snackBarTheme.backgroundColor,
+          colorText: Get.theme.snackBarTheme.actionTextColor);
+    }
+  }
+
+  resetPassword({required String email}) async {
+    showLoadingDialog();
+    try {
+      await FirebaseAuth.instance
+          .sendPasswordResetEmail(email: email)
+          .then((value) => Get.back());
+      dismissLoadingDialog();
+      Get.snackbar(
+          "Password Reset", "Your Email Verfication Code has been Sent");
+    } on FirebaseAuthException catch (e) {
+      dismissLoadingDialog();
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+        Get.snackbar("Password Reset", e.message!);
+      }
+    }
+  }
+
   void signOut() async {
     return await _auth.signOut();
   }

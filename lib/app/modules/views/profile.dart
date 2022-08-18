@@ -1,6 +1,8 @@
 import 'package:firstore_curd/app/data/text_styles.dart';
 import 'package:firstore_curd/app/models/user_model.dart';
+import 'package:firstore_curd/app/modules/widgets/custom_button.dart';
 import 'package:firstore_curd/app/modules/widgets/custom_textbutton.dart';
+import 'package:firstore_curd/app/modules/widgets/custom_textformfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -11,6 +13,9 @@ class MyProfile extends StatelessWidget {
   MyProfile({Key? key}) : super(key: key);
   UserController userController = Get.find<UserController>();
   AuthController authController = Get.find<AuthController>();
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,49 +30,47 @@ class MyProfile extends StatelessWidget {
       ),
       body: Padding(
         padding: EdgeInsets.all(20.w),
-        child: Column(
-          children: [
-            FutureBuilder<UserModel?>(
-                future: userController.getCurrentUser(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
-                  }
-                  UserModel currentUser = snapshot.data!;
-                  return Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 50.r,
-                        backgroundColor: Colors.grey.withOpacity(0.5),
-                        backgroundImage: NetworkImage(currentUser.pic!),
-                      ),
-                      SizedBox(width: 20.w),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(currentUser.name!.capitalizeFirst.toString(),
-                                style: CustomTextStyle.kBold18),
-                            Text(currentUser.email!,
-                                style: CustomTextStyle.kMedium16),
-                            Text(currentUser.id,
-                                style: CustomTextStyle.kMedium14),
-                          ],
-                        ),
-                      ),
-                    ],
-                  );
-                }),
-            SizedBox(height: 20.h),
-            Center(
-              child: CustomTextButton(
-                  text: "Sign out",
-                  onPressed: () {
-                    authController.signOut();
-                  }),
-            )
-          ],
-        ),
+        child: FutureBuilder<UserModel?>(
+            future: userController.getCurrentUser(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              }
+              UserModel currentUser = snapshot.data!;
+              return Column(
+                children: [
+                  Center(
+                    child: CircleAvatar(
+                      radius: 50.r,
+                      backgroundColor: Colors.grey.withOpacity(0.5),
+                      backgroundImage: NetworkImage(currentUser.pic!),
+                    ),
+                  ),
+                  SizedBox(height: 20.h),
+                  CustomTextFormField(
+                      controller: _nameController, hintText: currentUser.name!),
+                  SizedBox(height: 20.h),
+                  CustomTextFormField(
+                      controller: _emailController,
+                      hintText: currentUser.email!),
+                  SizedBox(height: 20.h),
+                  CustomButton(
+                      text: "Update",
+                      onPressed: () {
+                        authController.updateUserEmail(
+                            newEmail: _emailController.text.trim(),
+                            name: _nameController.text.trim());
+                      }),
+                  Center(
+                    child: CustomTextButton(
+                        text: "Sign out",
+                        onPressed: () {
+                          authController.signOut();
+                        }),
+                  )
+                ],
+              );
+            }),
       ),
     );
   }
