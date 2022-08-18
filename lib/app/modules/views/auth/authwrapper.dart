@@ -1,5 +1,6 @@
 import 'package:firstore_curd/app/modules/controllers/auth_controller.dart';
 import 'package:firstore_curd/app/modules/controllers/user_controller.dart';
+import 'package:firstore_curd/app/modules/views/bottombar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -20,7 +21,7 @@ class AuthWrapper extends StatelessWidget {
             return GetBuilder<UserController>(
                 init: UserController(),
                 builder: (uc) {
-                  return HomeView();
+                  return MyBottomBar();
                 });
           }
         });

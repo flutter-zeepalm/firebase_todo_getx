@@ -2,14 +2,12 @@ import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firstore_curd/app/modules/widgets/Dialogs/loading_dialog.dart';
-import 'package:firstore_curd/services/databasemanager.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImageService {
   File? image;
   final _picker = ImagePicker();
-  String? downloadUrl1;
 
   Future<File?> getImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -35,7 +33,6 @@ class StorageServices {
           .child('images/${DateTime.now()}')
           .putFile(image);
       downloadUrl = await snapshot.ref.getDownloadURL();
-      downloadUrl = downloadUrl;
       dismissLoadingDialog();
       return downloadUrl;
     } on Exception catch (e) {

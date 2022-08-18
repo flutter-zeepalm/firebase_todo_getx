@@ -16,6 +16,9 @@ Future<void> main() async {
           return GetMaterialApp(
             debugShowCheckedModeBanner: false,
             title: "Application",
+            theme: ThemeData(
+                primaryColor: Colors.orange,
+                scaffoldBackgroundColor: Colors.white),
             home: SplashScreen(),
             initialBinding: InitialBinding(),
           );

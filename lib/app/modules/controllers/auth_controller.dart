@@ -2,6 +2,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firstore_curd/app/models/user_model.dart';
+import 'package:firstore_curd/app/modules/widgets/Dialogs/loading_dialog.dart';
 import 'package:get/get.dart';
 
 import '../../../services/databasemanager.dart';
@@ -21,9 +22,12 @@ class AuthController extends GetxController {
   }
 
   Future<void> signInWithEmailAndPassword(String email, String password) async {
+    showLoadingDialog();
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
+      dismissLoadingDialog();
     } on FirebaseAuthException catch (error) {
+      dismissLoadingDialog();
       Get.snackbar('Login Failed', error.message!,
           snackPosition: SnackPosition.BOTTOM,
           duration: Duration(seconds: 3),
@@ -37,6 +41,7 @@ class AuthController extends GetxController {
       required String password,
       required String name,
       required String image}) async {
+    showLoadingDialog();
     try {
       await _auth
           .createUserWithEmailAndPassword(email: email, password: password)
@@ -47,11 +52,11 @@ class AuthController extends GetxController {
             name: name,
             pic: image);
         await _createUserFirestore(newUser, result.user!);
-        Get.back();
+        dismissLoadingDialog();
       });
     } on FirebaseAuthException catch (error) {
-      Get.snackbar('Sign up Failed',
-          "There is some issue while creating your Account ${error.message}",
+      dismissLoadingDialog();
+      Get.snackbar('Sign up Failed', error.message.toString(),
           snackPosition: SnackPosition.BOTTOM,
           duration: Duration(seconds: 10),
           backgroundColor: Get.theme.snackBarTheme.backgroundColor,
@@ -64,7 +69,7 @@ class AuthController extends GetxController {
     update();
   }
 
-  Future<void> signOut() {
-    return _auth.signOut();
+  void signOut() async {
+    return await _auth.signOut();
   }
 }

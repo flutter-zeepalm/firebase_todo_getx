@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firstore_curd/app/models/todo_model.dart';
 import 'package:firstore_curd/app/modules/controllers/user_controller.dart';
+import 'package:firstore_curd/app/modules/widgets/Dialogs/loading_dialog.dart';
 import 'package:firstore_curd/services/databasemanager.dart';
 import 'package:get/get.dart';
 
@@ -10,11 +11,15 @@ class TodoController extends GetxController {
   UserController uc = Get.find<UserController>();
   Future<void> addTask(TodoModel todo) async {
     try {
+      showLoadingDialog();
       var doc = db.taskCollection.doc();
       todo.id = doc.id;
       todo.ownerid = FirebaseAuth.instance.currentUser!.uid;
       await doc.set(todo.toMap());
+      dismissLoadingDialog();
+      Get.back();
     } catch (e) {
+      dismissLoadingDialog();
       Get.snackbar(
         "error",
         e.toString(),
@@ -33,49 +38,15 @@ class TodoController extends GetxController {
     });
   }
 
-
-
-
 //Get User Task
-  Future<List<TodoModel>> getUsersTask() async {
-    try {
-      List<TodoModel> usersTasks = [];
-      var snapshot = await FirebaseFirestore.instance.collection('Tasks').get();
-      for (var docs in snapshot.docs) {
-        TodoModel task = TodoModel.fromMap(docs.data());
-        if (task.ownerid == FirebaseAuth.instance.currentUser!.uid) {
-          usersTasks.add(task);
-        }
-      }
-      return usersTasks;
-    } on FirebaseException catch (e) {
-      Get.snackbar(
-        "error",
-        e.message!,
-        borderRadius: 15,
-        snackPosition: SnackPosition.BOTTOM,
-      );
-      return [];
-    }
-  }
 
-
-// Stream<List<TodoModel>> getUserTask() {
-//   List<TodoModel> userTodos = [];
-//     return db.taskCollection.snapshots().where((event) => event.docs.forEach((element) {
-//      return element.id == uc.user.id;
-//     } )).map((snapshot) {
-//       return snapshot.docs.map((doc) {
-//         return TodoModel.fromMap(doc.data() as Map<String, dynamic>);
-//       }).toList();
-//     });
-//   }
-
-//Update
   Future updateTask(TodoModel todo) async {
     try {
+      showLoadingDialog();
       await db.taskCollection.doc(todo.id).update(todo.toMap());
+      dismissLoadingDialog();
     } on FirebaseException catch (e) {
+      dismissLoadingDialog();
       Get.snackbar(
         "error",
         e.toString(),

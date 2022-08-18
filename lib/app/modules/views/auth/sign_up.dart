@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:firstore_curd/app/data/text_styles.dart';
 import 'package:firstore_curd/app/modules/controllers/auth_controller.dart';
-import 'package:firstore_curd/app/modules/controllers/image_controller.dart';
+import 'package:firstore_curd/services/image_services.dart';
 import 'package:firstore_curd/app/modules/widgets/custom_button.dart';
 import 'package:firstore_curd/app/modules/widgets/custom_textbutton.dart';
 import 'package:firstore_curd/app/modules/widgets/custom_textformfield.dart';
@@ -19,15 +19,10 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
-
   final _email = TextEditingController();
-
   final _pass = TextEditingController();
-
   final _name = TextEditingController();
-
   AuthController authController = Get.find<AuthController>();
-
   File? image;
 
   @override
@@ -52,6 +47,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 children: [
                   CircleAvatar(
                     radius: 60.r,
+                    backgroundColor: Colors.grey.withOpacity(0.09),
                     child: image != null
                         ? ClipOval(
                             clipBehavior: Clip.antiAlias,
@@ -62,7 +58,11 @@ class _SignUpPageState extends State<SignUpPage> {
                               fit: BoxFit.cover,
                             ),
                           )
-                        : Icon(Icons.person),
+                        : Icon(
+                            Icons.person,
+                            size: 50.h,
+                            color: Colors.black,
+                          ),
                   ),
                   CircleAvatar(
                       backgroundColor: Colors.orange,
@@ -124,11 +124,13 @@ class _SignUpPageState extends State<SignUpPage> {
                   }
                   String? imageUrl =
                       await StorageServices().uploadToStorage(image!);
-                  await authController.registerWithEmailAndPassword(
-                      email: _email.text.trim(),
-                      password: _pass.text.trim(),
-                      image: imageUrl ?? '',
-                      name: _name.text.trim());
+                  await authController
+                      .registerWithEmailAndPassword(
+                          email: _email.text.trim(),
+                          password: _pass.text.trim(),
+                          image: imageUrl ?? '',
+                          name: _name.text.trim())
+                      .then((value) => Get.back());
                 }
               },
               text: "Sign Up",

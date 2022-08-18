@@ -11,10 +11,12 @@ class TaskWidget extends StatelessWidget {
   VoidCallback? deleteTap;
   VoidCallback? likeTap;
   VoidCallback? dislikeTap;
+  bool currentUser;
   TodoModel todo;
 
   TaskWidget({
     Key? key,
+    required this.currentUser,
     this.onTap,
     this.deleteTap,
     this.likeTap,
@@ -38,16 +40,18 @@ class TaskWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(todo.title, style: CustomTextStyle.kBold18),
-                Row(
-                  children: [
-                    IconButton(
-                        onPressed: deleteTap,
-                        icon: Icon(Icons.delete, color: Colors.red)),
-                    IconButton(
-                        onPressed: onTap,
-                        icon: Icon(Icons.edit, color: Colors.blue))
-                  ],
-                )
+                currentUser
+                    ? Row(
+                        children: [
+                          IconButton(
+                              onPressed: deleteTap,
+                              icon: Icon(Icons.delete, color: Colors.red)),
+                          IconButton(
+                              onPressed: onTap,
+                              icon: Icon(Icons.edit, color: Colors.blue))
+                        ],
+                      )
+                    : SizedBox()
               ],
             ),
             ExpandableText(

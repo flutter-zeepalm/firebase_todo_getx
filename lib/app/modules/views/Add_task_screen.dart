@@ -29,92 +29,71 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: IconButton(
-          onPressed: () {
-            Get.back();
-          },
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-        ),
         centerTitle: true,
         title: Text("Add New Task", style: CustomTextStyle.kBold18),
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 50.h),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Add New Task",
-                    style: CustomTextStyle.kBold18.copyWith(
-                      fontSize: 40.sp,
-                    )),
-                SizedBox(height: 40.h),
-                CustomTextFormField(
-                  hintText: "Title",
-                  controller: TextEditingController(),
-                  validator: (String? value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return "Title is Required";
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    title = value;
-                  },
-                ),
-                SizedBox(height: 30.h),
-                CustomTextFormField(
-                  hintText: 'Description',
-                  controller: TextEditingController(),
-                  validator: (String? value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return "Description is Required";
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    description = value;
-                  },
-                ),
-                const Spacer(),
-                CustomButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      tc
-                          .addTask(
-                            TodoModel(
-                                id: "",
-                                ownerid: "",
-                                title: title,
-                                description: description,
-                                isCheck: false,
-                                likes: [],
-                                dislikes: []),
-                          )
-                          .then((value) => Get.back());
-                      // onFormSubmit();
-                    }
-                  },
-                  text: 'Add Todo',
-                )
-              ],
-            ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 50.h),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Add New Task",
+                  style: CustomTextStyle.kBold18.copyWith(
+                    fontSize: 40.sp,
+                  )),
+              SizedBox(height: 40.h),
+              CustomTextFormField(
+                hintText: "Title",
+                controller: TextEditingController(),
+                validator: (String? value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return "Title is Required";
+                  }
+                  return null;
+                },
+                onChanged: (value) {
+                  title = value;
+                },
+              ),
+              SizedBox(height: 30.h),
+              CustomTextFormField(
+                hintText: 'Description',
+                controller: TextEditingController(),
+                validator: (String? value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return "Description is Required";
+                  }
+                  return null;
+                },
+                onChanged: (value) {
+                  description = value;
+                },
+              ),
+              SizedBox(height: 200.h),
+              CustomButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    tc.addTask(
+                      TodoModel(
+                          id: "",
+                          ownerid: "",
+                          title: title,
+                          description: description,
+                          isCheck: false,
+                          likes: [],
+                          dislikes: []),
+                    );
+                    // onFormSubmit();
+                  }
+                },
+                text: 'Add Todo',
+              )
+            ],
           ),
         ),
       ),
     );
   }
-
-  // void onFormSubmit() {
-  // Box<Todo> timelinetodoBox = Hive.box<Todo>(HiveBoxes.todo);
-  // timelinetodoBox.add(Todo(
-  // title: title,
-  // description: description,
-  // isCheck: false,
-  // isLike: [],
-  // disLike: []));
-  // Get.back();
-  // }
 }

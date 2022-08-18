@@ -51,7 +51,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
         centerTitle: true,
         title: Text("Update Task", style: CustomTextStyle.kBold18),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 20.w),
         child: Form(
           key: _formKey,
@@ -85,19 +85,21 @@ class _UpdateScreenState extends State<UpdateScreen> {
                   return null;
                 },
               ),
-              const Spacer(),
+              SizedBox(height: 200.h),
               CustomButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       Get.back();
-                      tc.updateTask(TodoModel(
-                          title: titleController.text.trim(),
-                          likes: widget.uptodo.likes,
-                          dislikes: widget.uptodo.dislikes,
-                          description: descriptionController.text.trim(),
-                          id: widget.uptodo.id,
-                          isCheck: widget.uptodo.isCheck,
-                          ownerid: widget.uptodo.ownerid));
+                      tc
+                          .updateTask(TodoModel(
+                              title: titleController.text.trim(),
+                              likes: widget.uptodo.likes,
+                              dislikes: widget.uptodo.dislikes,
+                              description: descriptionController.text.trim(),
+                              id: widget.uptodo.id,
+                              isCheck: widget.uptodo.isCheck,
+                              ownerid: widget.uptodo.ownerid))
+                          .then((value) => Get.back());
                     }
                   },
                   text: 'Update Todo'),

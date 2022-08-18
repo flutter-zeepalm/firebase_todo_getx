@@ -20,15 +20,10 @@ class UserController extends GetxController {
     });
   }
 
-  // Stream<DocumentSnapshot> get currentUserStream {
-  //   return db.usersCollection
-  //       .doc(Get.find<AuthController>().user!.uid)
-  //       .snapshots();
-  // }
-
   @override
   Future<void> onReady() async {
     _userModel.value = await getCurrentUser();
+    print(_userModel.value!.email);
 
     super.onReady();
   }
